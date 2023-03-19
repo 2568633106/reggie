@@ -61,6 +61,7 @@ public class AddressBookController {
         LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AddressBook::getUserId,userId);
         AddressBook addressBook = addressBookService.getOne(queryWrapper);
+        System.out.println(4);
         return R.success(addressBook);
     }
 
