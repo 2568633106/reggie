@@ -11,6 +11,8 @@ import com.wtbu.service.SetmealDishService;
 import com.wtbu.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +53,7 @@ public class SetmealController {
     }
 
     @DeleteMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> deleteSetmeal(Long ids){
         if (setmealService.getById(ids).getStatus()==1) {
             throw new CustomException("套餐正在售卖，不能删除");
@@ -72,6 +75,7 @@ public class SetmealController {
     }
 
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache" ,key = "#setmeal.categoryId+'_'+setmeal.status")
     public R<List<DishDto>> getList(Long categoryId, Integer status){
         if (status==0) return null;
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
